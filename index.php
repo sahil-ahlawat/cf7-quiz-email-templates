@@ -193,18 +193,44 @@ function sa_cfe_send_email_on_form_submission($contact_form) {
             // Check the values of the Yes/No fields and None of the Above fields
             $use_template_2 = false;
             foreach ($yes_no_fields as $field) {
-                if (strtolower($data[trim($field)]) == 'no') {
-                    $use_template_2 = true;
-                    break;
-                }
-            }
-            if (!$use_template_2) {
-                foreach ($noneofabove_fields as $field) {
-                    if (strtolower($data[trim($field)]) != 'none of the above') {
+                $field_value = $data[trim($field)];
+                if (is_array($field_value)) {
+                    // If the field value is an array, check each selected option
+                    foreach ($field_value as $option) {
+                        if (strtolower($option) == 'no') {
+                            $use_template_2 = true;
+                            break 2; // Break out of both foreach loops
+                        }
+                    }
+                } else {
+                    // If the field value is a string, check it directly
+                    if (strtolower($field_value) == 'no') {
                         $use_template_2 = true;
                         break;
                     }
                 }
+            }
+            
+            if (!$use_template_2) {
+                foreach ($noneofabove_fields as $field) {
+                    $field_value = $data[trim($field)];
+                    if (is_array($field_value)) {
+                        // If the field value is an array, check each selected option
+                        foreach ($field_value as $option) {
+                            if (strtolower($option) != 'none of the above') {
+                                $use_template_2 = true;
+                                break 2; // Break out of both foreach loops
+                            }
+                        }
+                    } else {
+                        // If the field value is a string, check it directly
+                        if (strtolower($field_value) != 'none of the above') {
+                            $use_template_2 = true;
+                            break;
+                        }
+                    }
+                }
+                
             }
 
             // Define your conditions and templates
