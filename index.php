@@ -25,7 +25,7 @@ function cf7_quiz_email_templates_admin_menu() {
 }
 
 add_action('admin_menu', 'cf7_quiz_email_templates_admin_menu');
-function get_all_cf7_forms() {
+function sa_get_all_cf7_forms() {
     $args = array('post_type' => 'wpcf7_contact_form', 'posts_per_page' => -1);
     $cf7forms = get_posts( $args );
     return $cf7forms;
@@ -49,6 +49,9 @@ function cf7_quiz_email_templates_admin_page(){
 
     // Get the option values
     $cf7_form = get_option('sa_cfe_tem_cf7_form');
+    if(empty($cf7_form)){
+        $cf7_form = [];
+    }
     $template_area_1 = get_option('sa_cfe_tem_template_area_1');
     $template_area_2 = get_option('sa_cfe_tem_template_area_2');
     $yes_no_fields = get_option('sa_cfe_tem_yes_no_fields');
@@ -103,13 +106,18 @@ function cf7_quiz_email_templates_admin_page(){
             if(is_plugin_active( $cf7_plugin )){
                 // Add your fields here
                 // 1. Select field with multiple options to select capability
-                $forms = get_all_cf7_forms(); // Replace this with the function that gets all CF7 forms
+                $forms = sa_get_all_cf7_forms(); // Replace this with the function that gets all CF7 forms
                 echo "<h2>Select quiz contact forms</h2>";
-                echo '<select name="sa_cfe_tem_cf7_form[]" multiple>';
-                foreach ($forms as $form) {
-                    echo '<option value="' . $form->ID . '"' . (in_array($form->ID, $cf7_form) ? ' selected' : '') . '>' . $form->post_title . '</option>';
+                if($forms){
+                    echo '<select name="sa_cfe_tem_cf7_form[]" multiple>';
+                    foreach ($forms as $form) {
+                        echo '<option value="' . $form->ID . '"' . (in_array($form->ID, $cf7_form) ? ' selected' : '') . '>' . $form->post_title . '</option>';
+                    }
+                    echo '</select>';
                 }
-                echo '</select>';
+                else{
+                    echo "<h2>No CF& form found</h2>";
+                }
 
                 // 2. Template areas
                 echo "<h2>Template one</h2>";
