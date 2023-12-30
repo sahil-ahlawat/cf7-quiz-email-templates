@@ -3,7 +3,7 @@
 Plugin Name: CF7 Quiz Email Templates
 Description: A plugin to select CF7 forms and send email templates to users.
 Version: 1.0
-Author: Your Name
+Author: Sahil Ahlawat
 */
 
 // Make sure we don't expose any info if called directly
